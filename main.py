@@ -8,9 +8,9 @@ class Brainfuck:
 
         A Brainfuck interpreter with code
         """
-        self.code = "".join(filter(lambda x: x in '[>-+,.<]', code))
-        self.cells = [0]
-        self.ptr = 0
+        self._code = "".join(filter(lambda x: x in '[>-+,.<]', code))
+        self._cells = [0]
+        self._ptr = 0
 
     def __str__(self):
         """ (Brainfuck) -> str
@@ -21,60 +21,85 @@ class Brainfuck:
         >>> brnfck.__str__()
         >>++
         """
+        return self._code
 
-        return self.code
+    def run(self):
+        """ (Brainfuck) -> NoneType
+
+        run app
+        """
+        self.perform(self._code)
+        
+    def perform(self, code):
+        """ (Brainfuck, str) -> NoneType
+
+        perform the code.
+        """
+        for x in code:
+            if x == '+': self._increase()
+            elif x == '-': self._decrease()
+            elif x == '>': self_next()
+            elif x == '<': self._back()
+            elif x == '.': self._outData()
+            elif x == ',': self._inData()
+            
     
-    def increase(self):
+    def _increase(self):
         """ (Brainfuck) -> NoneType
 
         Increase value of the current cell.
         """
-        if self.cells[self.ptr] < 255:
-            self.cells[self.ptr] += 1
+        if self._cells[self._ptr] < 255:
+            self._cells[self._ptr] += 1
         else:
-            self.cells[self.ptr] = 0
+            self._cells[self._ptr] = 0
 
-    def decrease(self):
+    def _decrease(self):
         """ (Brainfuck) -> NoneType
 
         Decrease value of the current cell.
         """
-        if self.cells[self.ptr] < 255:
-            self.cells[self.ptr] -= 1
+        if self._cells[self._ptr] < 255:
+            self._cells[self._ptr] -= 1
         else:
-            self.cells[self.ptr] = 0
+            self._cells[self._ptr] = 0
 
-    def next(self):
+    def _next(self):
         """ (Brainfuck) -> NoneType
 
         Increment the pointer.
         """
-        self.prt += 1
-        if self.prt == len(self.cells):
-            self.cells.append(0)
+        self._ptr += 1
+        if self._ptr == len(self._cells):
+            self._cells.append(0)
             
-    def back(self):
+    def _back(self):
         """ (Brainfuck) -> NoneType
 
         Reduce the pointer.
         """
-        if self.ptr == 0:
-            self.ptr = len(self.cells) - 1
+        if self._ptr == 0:
+            self._ptr = len(self._cells) - 1
         else:
-            self.ptr -= 1
+            self._ptr -= 1
 
-    def outData(self):
+    def _outData(self):
         """ (Brainfuck) -> NoneType
 
         output the byte at the data pointer.
         """
-        sys.stdout.write(chr(self.cells[self.ptr]))
+        sys.stdout.write(chr(self._cells[self._ptr]))
 
-    def inData(self):
+    def _inData(self):
         """ (Brainfuck) -> NoneType
 
         accept one byte of input, storing its value in the byte at the data pointer.
         """
-        self.cells[self.ptr] = ord(sys.stdin.read(1))
+        self._cells[self._ptr] = ord(sys.stdin.read(1))
+
+if __name__ == '__main__':
+
+    bf = Brainfuck('++.')
+    bf.run()
         
     
